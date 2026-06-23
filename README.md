@@ -72,26 +72,35 @@ Raio de busca padrão: **100 km** para encontrar concessionárias nas cidades vi
 - Promoções ativas
 - Painel do usuário (agendamentos + favoritos)
 
-## Deploy
+## Deploy (Produção)
 
-### Backend (Render)
+### URLs
 
-1. Crie conta em https://render.com
-2. Conecte seu GitHub e selecione o repositório
-3. Escolha **Web Service**, preencha:
-   - **Name:** `motolocal-backend`
-   - **Build Command:** `npm install && npm run build`
-   - **Start Command:** `npm start`
-   - **Plan:** Free
-4. Adicione as variáveis de ambiente:
-   - `PORT`: `10000`
-   - `DATABASE_URL`: (sua URL do Neon)
-   - `JWT_SECRET`: (uma chave secreta)
-   - `FRONTEND_URL`: (URL do frontend no Vercel)
+- **Frontend:** https://moto-local-front.vercel.app
+- **Backend:** https://motolocal-backend.onrender.com
+- **Health Check:** https://motolocal-backend.onrender.com/api/health
 
-### Frontend (Vercel)
+### Variáveis de Ambiente (Render)
 
-1. Crie conta em https://vercel.com
-2. Conecte seu GitHub e selecione o repositório
-3. Aponte o **Root Directory** para `frontend/`
-4. O `vercel.json` já configura os rewrites da API
+| Variável | Valor |
+|----------|-------|
+| `PORT` | `10000` |
+| `DATABASE_URL` | URL do Neon PostgreSQL |
+| `JWT_SECRET` | Chave secreta JWT |
+| `FRONTEND_URL` | `https://moto-local-front.vercel.app` |
+
+### Rodar Localmente
+
+```bash
+# Backend
+cd backend
+cp .env.example .env  # Configure DATABASE_URL e JWT_SECRET
+npm install
+npm run migrate
+npm run dev           # http://localhost:3001
+
+# Frontend
+cd frontend
+npm install
+npm run dev           # http://localhost:5173
+```
