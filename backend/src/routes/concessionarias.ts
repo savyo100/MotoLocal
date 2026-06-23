@@ -8,7 +8,7 @@ const router = Router();
 const distanciaSchema = z.object({
   latitude: z.coerce.number().min(-90).max(90),
   longitude: z.coerce.number().min(-180).max(180),
-  raio_km: z.coerce.number().min(1).max(200).default(50),
+  raio_km: z.coerce.number().min(1).max(200).default(100),
   tipo_servico: z.string().optional(),
   marca: z.string().optional(),
 });
@@ -52,7 +52,13 @@ router.get('/', async (req: Request, res: Response) => {
     sql += ' ORDER BY distancia_km ASC, c.score DESC';
 
     const result = await query(sql, values);
-    res.json(result.rows);
+    const parsed = result.rows.map((r: any) => ({
+      ...r,
+      score: Number(r.score) || 0,
+      media_preco: r.media_preco != null ? Number(r.media_preco) : null,
+      distancia_km: r.distancia_km != null ? Number(r.distancia_km) : null,
+    }));
+    res.json(parsed);
   } catch (error) {
     if (error instanceof z.ZodError) {
       return res.status(400).json({ error: 'Parâmetros inválidos', detalhes: error.errors });
@@ -88,7 +94,17 @@ router.get('/:id', async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Concessionária não encontrada' });
     }
 
-    res.json(result.rows[0]);
+    const row = result.rows[0];
+    row.score = Number(row.score) || 0;
+    row.media_preco = row.media_preco != null ? Number(row.media_preco) : null;
+    row.media_reviews = Number(row.media_reviews) || 0;
+    if (row.servicos) {
+      row.servicos = row.servicos.map((s: any) => ({ ...s, preco: Number(s.preco) }));
+    }
+    if (row.reviews) {
+      row.reviews = row.reviews.map((r: any) => ({ ...r, nota: Number(r.nota) }));
+    }
+    res.json(row);
   } catch (error) {
     console.error('Erro ao buscar concessionária:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });

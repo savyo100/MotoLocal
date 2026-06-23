@@ -21,8 +21,8 @@ export default function Map({ concessionarias, center, onSelect }: MapProps) {
   useEffect(() => {
     if (mapContainerRef.current && !mapRef.current) {
       mapRef.current = L.map(mapContainerRef.current, {
-        center: center || [-4.7332, -41.7745],
-        zoom: 13,
+        center: center || [-4.2736, -41.7753],
+        zoom: 11,
         zoomControl: true,
       });
 

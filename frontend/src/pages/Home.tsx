@@ -9,7 +9,7 @@ import { Concessionaria } from '../types';
 
 export default function Home() {
   const [concessionarias, setConcessionarias] = useState<Concessionaria[]>([]);
-  const [center, setCenter] = useState<[number, number]>([-4.7332, -41.7745]);
+  const [center, setCenter] = useState<[number, number]>([-4.2736, -41.7753]);
   const [tipoServico, setTipoServico] = useState('');
   const [marca, setMarca] = useState('');
   const [loading, setLoading] = useState(false);
@@ -17,7 +17,7 @@ export default function Home() {
   const buscarConcessionarias = useCallback(async (lat: number, lng: number) => {
     setLoading(true);
     try {
-      const params: any = { latitude: lat, longitude: lng, raio_km: 50 };
+      const params: any = { latitude: lat, longitude: lng, raio_km: 100 };
       if (tipoServico) params.tipo_servico = tipoServico;
       if (marca) params.marca = marca;
       const res = await api.get('/concessionarias', { params });
@@ -35,7 +35,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    onLocationFound(-4.7332, -41.7745);
+    onLocationFound(-4.2736, -41.7753);
   }, [tipoServico, marca]);
 
   return (
