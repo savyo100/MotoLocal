@@ -126,7 +126,7 @@ async function searchRegion(
 async function main() {
   console.log('Buscando concessionárias de motos via OpenStreetMap...\n');
 
-  const regioes = [
+  const regioes: [string, number, number, number][] = [
     ['Teresina', -5.0892, -42.8016, 50000],
     ['Parnaíba', -2.9056, -41.7767, 50000],
     ['Piripiri', -4.2736, -41.7753, 50000],
@@ -135,7 +135,7 @@ async function main() {
     ['Esperantina', -3.9010, -42.2390, 50000],
     ['Pedro II', -4.4250, -41.4590, 50000],
     ['Piracuruca', -3.9280, -41.7090, 50000],
-  ] as const;
+  ];
 
   const todas: any[] = [];
   for (const [label, lat, lon, raio] of regioes) {
@@ -150,9 +150,9 @@ async function main() {
     await delay(3000);
   }
 
-  // Remove duplicatas pelo nome
-  const unicas = Object.values(
-    Object.fromEntries(todas.map(c => [c.nome.toLowerCase(), c]))
+  type Unica = { nome: string; endereco: string; latitude: number; longitude: number; marca: string; telefone: string };
+  const unicas: Unica[] = Object.values(
+    Object.fromEntries(todas.map((c: Unica) => [c.nome.toLowerCase(), c]))
   );
 
   if (unicas.length === 0) {
